@@ -93,14 +93,16 @@ export async function POST(request: NextRequest) {
         lines: lines,
         success: true,
       });
-    } catch (parseError: any) {
+    } catch (parseError: unknown) {
+      const message = (parseError as Error).message;
+      const stack = (parseError as Error).stack;
       console.error("PDF parse error details:", {
-        message: parseError.message,
-        stack: parseError.stack,
+        message,
+        stack,
       });
 
       // More specific error messages
-      if (parseError.message?.includes("password")) {
+      if (message?.includes("password")) {
         return NextResponse.json(
           {
             error:
@@ -110,7 +112,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      if (parseError.message?.includes("corrupt")) {
+      if (message?.includes("corrupt")) {
         return NextResponse.json(
           { error: "PDF appears to be corrupted or invalid." },
           { status: 400 }
@@ -127,12 +129,13 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = (error as Error).message;
     console.error("PDF parsing API error:", error);
     return NextResponse.json(
       {
         error: "Failed to process PDF file",
-        details: error.message,
+        details: message,
       },
       { status: 500 }
     );

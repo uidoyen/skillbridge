@@ -37,10 +37,12 @@ export async function POST(req: NextRequest) {
 
     const result = await generateWithLocalLLM(jdText, mode);
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Local Gemma API error:", error);
     return NextResponse.json(
-      { error: error.message ?? "Failed to process with local Gemma" },
+      {
+        error: (error as Error).message ?? "Failed to process with local Gemma",
+      },
       { status: 500 }
     );
   }
@@ -133,7 +135,7 @@ Guidelines:
     ],
   });
 
-  let content = completion.choices[0].message?.content;
+  const content = completion.choices[0].message?.content;
   if (!content) throw new Error("Local Gemma returned empty response");
 
   console.log("Gemma raw response:", content);
@@ -141,10 +143,10 @@ Guidelines:
   let parsed;
   try {
     parsed = extractStructuredJson(content);
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.warn(
       "Failed to extract structured JSON from Gemma response:",
-      e.message
+      (e as Error).message
     );
     // fallback: return raw content as a string in a field
     return { rawResponse: content };

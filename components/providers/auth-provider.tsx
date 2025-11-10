@@ -5,7 +5,7 @@ import { User } from "@/types";
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -20,7 +20,7 @@ const mockUser: User = {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const login = async (email: string, password: string) => {
+  const login = async (email: string) => {
     // Mock login - replace with actual NextAuth implementation
     console.log("Login attempt:", email);
   };

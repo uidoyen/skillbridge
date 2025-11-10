@@ -1,7 +1,7 @@
 "use client";
 
 import { Switch, IconButton, Tooltip, useColorScheme } from "@mui/material";
-import { Briefcase, Code, Moon, Sun, User, Settings } from "lucide-react";
+import { Briefcase, Code, Moon, Sun, Settings } from "lucide-react";
 
 interface HeaderProps {
   mode: "hr" | "dev";

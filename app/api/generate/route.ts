@@ -239,11 +239,11 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
         }`
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Gemini API error:", error);
     throw new Error(
       `Gemini API failed: ${
-        error instanceof Error ? error.message : "Unknown error"
+        error instanceof Error ? (error as Error).message : "Unknown error"
       }`
     );
   }
@@ -256,7 +256,7 @@ function extractJsonFromText(text: string): string {
   }
 
   // Remove markdown code blocks
-  let cleaned = text
+  const cleaned = text
     .replace(/```json\s*/g, "")
     .replace(/```\s*/g, "")
     .trim();
