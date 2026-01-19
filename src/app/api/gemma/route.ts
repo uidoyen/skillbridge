@@ -80,6 +80,9 @@ async function generateWithLocalLLM(jdText: string, mode: "hr" | "dev") {
 
 {
   "skills": string[],
+  "salaryEstimation": "string (e.g. $100k - $130k)",
+  "softSkills": string[],
+  "evaluationCriteria": string[] (checklist for interviewers),
   "codingTask": {
     "title": string,
     "description": string,
@@ -101,6 +104,10 @@ Guidelines:
 
 {
   "skills": string[],
+  "salaryEstimation": "string (e.g. $100k - $130k)",
+  "softSkills": string[],
+  "resumeKeywords": string[] (ATS keywords),
+  "projectSuggestion": "string (brief description of a portfolio project)",
   "codingTask": {
     "title": string,
     "description": string,
@@ -154,14 +161,26 @@ Guidelines:
 
   // Validate required fields
   const hasRequiredFieldsHR =
-    parsed.skills && parsed.codingTask && parsed.questions;
+    parsed.skills &&
+    parsed.codingTask &&
+    parsed.questions &&
+    parsed.evaluationCriteria &&
+    parsed.salaryEstimation;
+
   const hasRequiredFieldsDev =
-    hasRequiredFieldsHR && parsed.skillGaps && parsed.learningPath;
+    parsed.skills &&
+    parsed.codingTask &&
+    parsed.questions &&
+    parsed.learningPath &&
+    parsed.resumeKeywords &&
+    parsed.projectSuggestion;
 
   if (mode === "hr" && !hasRequiredFieldsHR) {
+    console.error("Missing HR fields:", parsed);
     throw new Error("Gemma response missing required fields for HR mode");
   }
   if (mode === "dev" && !hasRequiredFieldsDev) {
+    console.error("Missing Dev fields:", parsed);
     throw new Error("Gemma response missing required fields for Dev mode");
   }
 

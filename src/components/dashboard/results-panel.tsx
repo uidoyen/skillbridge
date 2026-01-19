@@ -11,8 +11,12 @@ import {
   Loader2,
   FileText,
   AlertCircle,
+  Map,
+  ClipboardCheck,
 } from "lucide-react";
 import { AnalysisResult } from "@/types/index";
+import { RoadmapTab } from "./tabs/roadmap-tab";
+import { EvaluationTab } from "./tabs/evaluation-tab";
 
 interface ResultsPanelProps {
   results: AnalysisResult | null;
@@ -22,8 +26,16 @@ interface ResultsPanelProps {
   error?: string | null; // Add this
 }
 
-const tabs = [
-  { id: "skills", label: "Skills", icon: Brain },
+const commonTabs = [{ id: "skills", label: "Skills", icon: Brain }];
+
+const hrTabs = [
+  { id: "evaluation", label: "Evaluation", icon: ClipboardCheck },
+  { id: "coding-task", label: "Coding Task", icon: Code },
+  { id: "questions", label: "Questions", icon: Users },
+];
+
+const devTabs = [
+  { id: "roadmap", label: "Roadmap", icon: Map },
   { id: "coding-task", label: "Coding Task", icon: Code },
   { id: "questions", label: "Questions", icon: Users },
 ];
@@ -36,6 +48,11 @@ export default function ResultsPanel({
   error,
 }: ResultsPanelProps) {
   const [activeTab, setActiveTab] = useState("skills");
+
+  const availableTabs = [
+    ...commonTabs,
+    ...(currentMode === "hr" ? hrTabs : devTabs),
+  ];
 
   if (isLoading) {
     return (
@@ -94,8 +111,8 @@ export default function ResultsPanel({
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
       {/* Tabs Header */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6" aria-label="Tabs">
-          {tabs.map((tab) => {
+        <nav className="flex space-x-8 px-6 overflow-x-auto" aria-label="Tabs">
+          {availableTabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <button
@@ -120,6 +137,8 @@ export default function ResultsPanel({
         {activeTab === "skills" && (
           <SkillsTab skills={results.skills} mode={mode} />
         )}
+        {activeTab === "evaluation" && <EvaluationTab analysis={results} />}
+        {activeTab === "roadmap" && <RoadmapTab analysis={results} />}
         {activeTab === "coding-task" && (
           <CodingTaskTab task={results.codingTask} mode={mode} />
         )}

@@ -2,6 +2,15 @@ export interface AnalysisResult {
   skills: string[];
   codingTask: CodingTask;
   questions: InterviewQuestions;
+  // Shared
+  salaryEstimation?: string;
+  softSkills?: string[];
+  // HR Specific
+  evaluationCriteria?: string[];
+  // Dev Specific
+  resumeKeywords?: string[];
+  projectSuggestion?: string;
+  learningPath?: string[];
 }
 
 export interface CodingTask {
@@ -9,6 +18,7 @@ export interface CodingTask {
   description: string;
   difficulty: "beginner" | "intermediate" | "advanced";
   requirements: string[];
+  learningResources?: string[];
 }
 
 export interface InterviewQuestions {
