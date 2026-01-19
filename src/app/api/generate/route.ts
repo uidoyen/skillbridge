@@ -151,8 +151,12 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
     ${jdText}
     
     Return ONLY valid JSON with this exact structure:
+    Return ONLY valid JSON with this exact structure:
     {
       "skills": ["skill1", "skill2", ...],
+      "salaryEstimation": "string (e.g. $100k - $130k)",
+      "softSkills": ["softSkill1", "softSkill2", ...],
+      "evaluationCriteria": ["criteria1", "criteria2", ...] (checklist for interviewers),
       "codingTask": {
         "title": "Task title",
         "description": "Detailed description",
@@ -177,8 +181,13 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
     ${jdText}
     
     Return ONLY valid JSON with this exact structure:
+    Return ONLY valid JSON with this exact structure:
     {
       "skills": ["skill1", "skill2", ...],
+      "salaryEstimation": "string (e.g. $100k - $130k)",
+      "softSkills": ["softSkill1", "softSkill2", ...],
+      "resumeKeywords": ["keyword1", "keyword2", ...] (ATS keywords),
+      "projectSuggestion": "string (brief description of a portfolio project)",
       "codingTask": {
         "title": "Practice project title",
         "description": "Detailed project description for learning",
@@ -218,12 +227,21 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
       const parsedData = JSON.parse(jsonText);
 
       // Validate the response structure
+      // Validate the response structure
       if (
         !parsedData.skills ||
         !parsedData.codingTask ||
         !parsedData.questions
       ) {
         throw new Error("Invalid response structure from Gemini");
+      }
+
+      // Check for new fields (optional but good to warn if missing)
+      if (
+        !parsedData.salaryEstimation &&
+        process.env.NODE_ENV === "development"
+      ) {
+        console.warn("Gemini response missing salaryEstimation");
       }
 
       return parsedData;

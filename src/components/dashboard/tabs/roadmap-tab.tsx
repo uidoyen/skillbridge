@@ -1,12 +1,5 @@
 import { AnalysisResult } from "@/types";
-import {
-  BookOpen,
-  Map,
-  FileText,
-  Lightbulb,
-  CheckCircle2,
-  Trophy,
-} from "lucide-react";
+import { BookOpen, Map, FileText, Lightbulb, Trophy } from "lucide-react";
 
 interface RoadmapTabProps {
   analysis: AnalysisResult;
