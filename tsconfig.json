@@ -23,7 +23,7 @@
       "@/components/*": ["components/*"],
       "@/types": ["types/index"],
       "@/types/*": ["types/*"],
-      "@/lib/*": ["app/lib/*"],
+      "@/lib/*": ["lib/*", "app/lib/*"],
       "@/providers/*": ["app/providers/*"]
     }
   },

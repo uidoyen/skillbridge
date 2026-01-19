@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
+import { useState } from "react";
+import Link from "next/link";
 import {
   Rocket,
   Code,
@@ -10,28 +10,30 @@ import {
   ArrowRight,
   Shield,
   Zap,
-} from 'lucide-react'
+} from "lucide-react";
 
 export default function Home() {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
   const features = [
     {
-      icon: <Brain className="w-8 h-8" />, 
-      title: 'AI-Powered Parsing',
-      description: 'Extract skills and requirements from job descriptions using advanced AI',
+      icon: <Brain className="w-8 h-8" />,
+      title: "AI-Powered Parsing",
+      description:
+        "Extract skills and requirements from job descriptions using advanced AI",
     },
     {
       icon: <Code className="w-8 h-8" />,
-      title: 'Smart Coding Tasks',
-      description: 'Generate relevant coding challenges based on extracted skills',
+      title: "Smart Coding Tasks",
+      description:
+        "Generate relevant coding challenges based on extracted skills",
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: 'Dual Mode System',
-      description: 'HR mode for recruiters and Dev mode for candidates',
+      title: "Dual Mode System",
+      description: "HR mode for recruiters and Dev mode for candidates",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -40,10 +42,15 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Shield className="w-8 h-8 text-primary-600" />
-            <span className="text-2xl font-bold text-gray-900">SkillBridge</span>
+            <span className="text-2xl font-bold text-gray-900">
+              SkillBridge
+            </span>
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
+            <Link
+              href="/dashboard"
+              className="text-gray-600 hover:text-gray-900 transition-colors"
+            >
               Dashboard
             </Link>
             <Link
@@ -62,11 +69,13 @@ export default function Home() {
         <div className="text-center">
           <h1 className="text-6xl font-bold text-gray-900 mb-6 leading-tight">
             Bridge the Gap Between
-            <span className="text-primary-600 block">Talent and Opportunity</span>
+            <span className="text-primary-600 block">
+              Talent and Opportunity
+            </span>
           </h1>
           <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-            SkillBridge uses AI to parse job descriptions, extract required skills,
-            and generate tailored coding tasks and interview questions.
+            SkillBridge uses AI to parse job descriptions, extract required
+            skills, and generate tailored coding tasks and interview questions.
             Streamline your hiring process or prepare for your next role.
           </p>
 
@@ -77,7 +86,9 @@ export default function Home() {
             onMouseLeave={() => setIsHovered(false)}
           >
             <Rocket
-              className={`w-5 h-5 transition-transform ${isHovered ? 'animate-bounce' : ''}`}
+              className={`w-5 h-5 transition-transform ${
+                isHovered ? "animate-bounce" : ""
+              }`}
             />
             <span>Get Started Free</span>
             <ArrowRight className="w-5 h-5" />
@@ -97,7 +108,9 @@ export default function Home() {
               <h3 className="text-xl font-semibold text-gray-900 mb-3">
                 {feature.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              <p className="text-gray-600 leading-relaxed">
+                {feature.description}
+              </p>
             </div>
           ))}
         </div>
@@ -111,7 +124,8 @@ export default function Home() {
             Ready to Transform Your Hiring Process?
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join hundreds of companies and developers using SkillBridge to make better hiring decisions and career moves.
+            Join hundreds of companies and developers using SkillBridge to make
+            better hiring decisions and career moves.
           </p>
           <Link
             href="/dashboard"
@@ -123,5 +137,5 @@ export default function Home() {
         </div>
       </section>
     </div>
-  )
+  );
 }

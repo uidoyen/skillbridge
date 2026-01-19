@@ -1,15 +1,19 @@
 "use client";
 
 import { Switch, IconButton, Tooltip, useColorScheme } from "@mui/material";
-import { Briefcase, Code, Moon, Sun, Settings } from "lucide-react";
+import { Briefcase, Code, Moon, Sun, Settings, LogOut } from "lucide-react";
+import { User } from "@/types";
+import { useAuth } from "@/components/providers/auth-provider";
 
 interface HeaderProps {
   mode: "hr" | "dev";
+  user: User | null;
   onModeChange: (mode: "hr" | "dev") => void;
 }
 
-export default function Header({ mode, onModeChange }: HeaderProps) {
+export default function Header({ mode, user, onModeChange }: HeaderProps) {
   const { mode: colorMode, setMode } = useColorScheme();
+  const { logout } = useAuth();
 
   const toggleTheme = () => {
     setMode(colorMode === "light" ? "dark" : "light");
@@ -34,8 +38,11 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* HR/Dev Mode Toggle */}
-          <div className="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2">
+          {/* HR/Dev Mode Toggle - Disabled for role-based access */}
+          <div
+            className="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 opacity-80 cursor-not-allowed"
+            title="Mode is locked to your role"
+          >
             <div className="flex items-center space-x-2">
               <Briefcase
                 className={`w-4 h-4 ${
@@ -51,11 +58,7 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
               </span>
             </div>
 
-            <Switch
-              checked={mode === "dev"}
-              onChange={(e) => onModeChange(e.target.checked ? "dev" : "hr")}
-              color="primary"
-            />
+            <Switch checked={mode === "dev"} disabled={true} color="primary" />
 
             <div className="flex items-center space-x-2">
               <span
@@ -96,6 +99,16 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
 
           {/* User Profile */}
           <div className="flex items-center space-x-3 pl-2 border-l border-gray-200 dark:border-gray-700">
+            <Tooltip title="Log out">
+              <IconButton
+                onClick={logout}
+                className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 rounded-lg transition-colors"
+                aria-label="Log out"
+              >
+                <LogOut className="w-4 h-4" />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Settings">
               <IconButton
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -107,14 +120,16 @@ export default function Header({ mode, onModeChange }: HeaderProps) {
 
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">D</span>
+                <span className="text-white text-sm font-medium">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
+                </span>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
-                  Demo User
+                  {user?.name || "User"}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {mode === "hr" ? "HR Professional" : "Developer"}
+                  {user?.role === "hr" ? "HR Professional" : "Developer"}
                 </p>
               </div>
             </div>

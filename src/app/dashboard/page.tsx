@@ -1,18 +1,29 @@
-// app/dashboard/page.tsx
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard/layout";
 import JdInputPanel from "@/components/dashboard/jd-input-panel";
 import ResultsPanel from "@/components/dashboard/results-panel";
 import { AnalysisResult } from "@/types/index";
+import { useAuth } from "@/components/providers/auth-provider";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
   const [mode, setMode] = useState<"hr" | "dev">("hr");
   const [currentJdText, setCurrentJdText] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // Sync mode with user role
+  useEffect(() => {
+    if (user?.role) {
+      setMode(user.role);
+    }
+  }, [user]);
 
   // Memoized analyze function that calls the actual API
   const analyzeJd = useCallback(
@@ -90,8 +101,16 @@ export default function Dashboard() {
     setError(null);
   };
 
+  if (isAuthLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <DashboardLayout mode={mode} onModeChange={handleModeChange}>
+    <DashboardLayout mode={mode} user={user} onModeChange={handleModeChange}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
         <JdInputPanel
           onAnalyze={handleAnalyze}
