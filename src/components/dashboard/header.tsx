@@ -11,7 +11,7 @@ interface HeaderProps {
   onModeChange: (mode: "hr" | "dev") => void;
 }
 
-export default function Header({ mode, user, onModeChange }: HeaderProps) {
+export default function Header({ mode, user }: HeaderProps) {
   const { mode: colorMode, setMode } = useColorScheme();
   const { logout } = useAuth();
 

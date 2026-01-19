@@ -19,7 +19,7 @@ function AuthProviderContent({ children }: { children: ReactNode }) {
   const user = session?.user as User | null;
   const isLoading = status === "loading";
 
-  const login = async (email: string, role?: "hr" | "dev") => {
+  const login = async (email: string) => {
     // For the custom credential provider, we assume the email determines the role
     // or we pass it as a param if the provider supports it.
     // Our logic in [...nextauth] uses email content.

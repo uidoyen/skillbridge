@@ -2,7 +2,34 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { User } from "@/types";
+
+// Extend the built-in session types
+declare module "next-auth" {
+  interface User {
+    id: string;
+    role: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  }
+
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: string;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -53,15 +80,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
+        token.role = user.role;
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id;
+        session.user.role = token.role as string;
+        session.user.id = token.id as string;
       }
       return session;
     },

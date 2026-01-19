@@ -6,11 +6,9 @@ import JdInputPanel from "@/components/dashboard/jd-input-panel";
 import ResultsPanel from "@/components/dashboard/results-panel";
 import { AnalysisResult } from "@/types/index";
 import { useAuth } from "@/components/providers/auth-provider";
-import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const { user, isLoading: isAuthLoading } = useAuth();
-  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<AnalysisResult | null>(null);
