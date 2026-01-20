@@ -85,15 +85,6 @@ export default function Dashboard() {
     await analyzeJd(jdText, mode);
   };
 
-  // Handle mode change - clear results and current JD text
-  const handleModeChange = (newMode: "hr" | "dev") => {
-    // Clear all state to reset the context
-    setResults(null);
-    setCurrentJdText("");
-    setError(null);
-    setMode(newMode);
-  };
-
   // Clear error manually
   const clearError = () => {
     setError(null);
@@ -108,7 +99,7 @@ export default function Dashboard() {
   }
 
   return (
-    <DashboardLayout mode={mode} user={user} onModeChange={handleModeChange}>
+    <DashboardLayout mode={mode} user={user}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
         <JdInputPanel
           onAnalyze={handleAnalyze}

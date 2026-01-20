@@ -100,26 +100,50 @@ export function RoadmapTab({ analysis }: RoadmapTabProps) {
               </span>
             )}
           </div>
-
-          {/* Salary Estimation */}
-          {analysis.salaryEstimation && (
-            <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
-              <div className="flex items-center space-x-2 mb-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
-                <h4 className="font-semibold text-gray-900 dark:text-white">
-                  Estimated Salary
-                </h4>
-              </div>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {analysis.salaryEstimation}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Based on role requirements
-              </p>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Estimated Salary - Full Width & Attractive */}
+      {/* Estimated Salary - Full Width & Attractive */}
+      {analysis.salaryAnalysis && (
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-6 border border-emerald-100 dark:border-emerald-800 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Trophy className="w-24 h-24 text-emerald-600 dark:text-emerald-400" />
+          </div>
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="bg-emerald-100 dark:bg-emerald-800 p-3 rounded-full shadow-sm">
+                <Trophy className="w-8 h-8 text-emerald-600 dark:text-emerald-300" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Estimated Salary Range
+                </h3>
+                <p className="text-emerald-700 dark:text-emerald-400 font-medium">
+                  Based on current market standards for this role
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 px-8 py-4 rounded-xl shadow-md border border-emerald-100 dark:border-emerald-800 transform transition-transform hover:scale-105">
+              <p className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: analysis.salaryAnalysis.currency,
+                  maximumFractionDigits: 0,
+                }).format(analysis.salaryAnalysis.min)}{" "}
+                -{" "}
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: analysis.salaryAnalysis.currency,
+                  maximumFractionDigits: 0,
+                }).format(analysis.salaryAnalysis.max)}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

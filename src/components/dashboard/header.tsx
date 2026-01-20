@@ -1,14 +1,13 @@
 "use client";
 
-import { Switch, IconButton, Tooltip, useColorScheme } from "@mui/material";
-import { Briefcase, Code, Moon, Sun, Settings, LogOut } from "lucide-react";
+import { IconButton, Tooltip, useColorScheme } from "@mui/material";
+import { Briefcase, Code, Moon, Sun, LogOut } from "lucide-react";
 import { User } from "@/types";
 import { useAuth } from "@/components/providers/auth-provider";
 
 interface HeaderProps {
   mode: "hr" | "dev";
   user: User | null;
-  onModeChange: (mode: "hr" | "dev") => void;
 }
 
 export default function Header({ mode, user }: HeaderProps) {
@@ -38,42 +37,23 @@ export default function Header({ mode, user }: HeaderProps) {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* HR/Dev Mode Toggle - Disabled for role-based access */}
-          <div
-            className="flex items-center space-x-3 bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 opacity-80 cursor-not-allowed"
-            title="Mode is locked to your role"
-          >
-            <div className="flex items-center space-x-2">
-              <Briefcase
-                className={`w-4 h-4 ${
-                  mode === "hr" ? "text-primary-500" : "text-gray-400"
-                }`}
-              />
-              <span
-                className={`text-sm font-medium ${
-                  mode === "hr" ? "text-primary-600" : "text-gray-500"
-                }`}
-              >
-                HR Mode
-              </span>
-            </div>
-
-            <Switch checked={mode === "dev"} disabled={true} color="primary" />
-
-            <div className="flex items-center space-x-2">
-              <span
-                className={`text-sm font-medium ${
-                  mode === "dev" ? "text-primary-600" : "text-gray-500"
-                }`}
-              >
-                Dev Mode
-              </span>
-              <Code
-                className={`w-4 h-4 ${
-                  mode === "dev" ? "text-primary-500" : "text-gray-400"
-                }`}
-              />
-            </div>
+          {/* Role Badge */}
+          <div className="hidden md:flex items-center space-x-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-1.5 border border-gray-200 dark:border-gray-700">
+            {mode === "hr" ? (
+              <>
+                <Briefcase className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  HR Workspace
+                </span>
+              </>
+            ) : (
+              <>
+                <Code className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white">
+                  Dev Workspace
+                </span>
+              </>
+            )}
           </div>
 
           {/* Theme Toggle */}
@@ -106,15 +86,6 @@ export default function Header({ mode, user }: HeaderProps) {
                 aria-label="Log out"
               >
                 <LogOut className="w-4 h-4" />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Settings">
-              <IconButton
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                aria-label="Settings"
-              >
-                <Settings className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </IconButton>
             </Tooltip>
 

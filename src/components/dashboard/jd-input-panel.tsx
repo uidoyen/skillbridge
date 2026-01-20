@@ -133,16 +133,18 @@ export default function JdInputPanel({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-300">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-xl transition-all duration-300">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-primary-50 rounded-lg">
-            <FileText className="w-6 h-6 text-primary-600" />
+          <div className="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+            <FileText className="w-6 h-6 text-primary-600 dark:text-primary-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Job Description</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              Job Description
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Upload or paste job details to analyze
             </p>
           </div>
@@ -152,7 +154,7 @@ export default function JdInputPanel({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* File Upload Section */}
         <div className="space-y-4">
-          <label className="block text-sm font-semibold text-gray-900">
+          <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
             Upload Document
           </label>
 
@@ -164,8 +166,8 @@ export default function JdInputPanel({
               transition-all duration-300 group
               ${
                 isParsingPDF
-                  ? "border-primary-400 bg-primary-25"
-                  : "border-gray-300 bg-gray-50 hover:border-primary-400 hover:bg-primary-25"
+                  ? "border-primary-400 bg-primary-25 dark:bg-primary-900/20"
+                  : "border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/10"
               }
             `}
             >
@@ -185,10 +187,10 @@ export default function JdInputPanel({
                     <Upload className="w-6 h-6 text-gray-400 group-hover:text-primary-600 transition-colors" />
                   </div>
                   <div className="text-center">
-                    <p className="text-gray-700 font-medium mb-1">
+                    <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
                       Click to upload or drag and drop
                     </p>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
                       PDF, TXT, DOC, or DOCX (Max 10MB)
                     </p>
                   </div>
@@ -218,7 +220,7 @@ export default function JdInputPanel({
 
         {/* Text Area Section */}
         <div className="space-y-4">
-          <label className="block text-sm font-semibold text-gray-900">
+          <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100">
             Paste Job Description
           </label>
 
@@ -230,9 +232,14 @@ export default function JdInputPanel({
               className={`w-full h-64 px-4 py-4 border rounded-xl 
                        focus:ring-2 focus:ring-primary-500 focus:border-transparent 
                        resize-none transition-all duration-200
-                       disabled:bg-gray-50 disabled:cursor-not-allowed
-                       placeholder-gray-400 text-gray-700 leading-relaxed
-                       ${error ? "border-red-300" : "border-gray-300"}`}
+                       bg-white dark:bg-gray-900
+                       disabled:bg-gray-50 dark:disabled:bg-gray-800 disabled:cursor-not-allowed
+                       placeholder-gray-400 dark:placeholder-gray-600 text-gray-700 dark:text-gray-200 leading-relaxed
+                       ${
+                         error
+                           ? "border-red-300 dark:border-red-800"
+                           : "border-gray-300 dark:border-gray-700"
+                       }`}
               disabled={isLoading || isParsingPDF}
             />
 
@@ -337,12 +344,12 @@ export default function JdInputPanel({
       </form>
 
       {/* Quick Tips */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
-        <h4 className="text-sm font-semibold text-blue-900 mb-2 flex items-center">
+      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+        <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center">
           <CheckCircle className="w-4 h-4 mr-2" />
           Pro Tips
         </h4>
-        <ul className="text-xs text-blue-700 space-y-1">
+        <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
           <li>• Upload PDF job descriptions for automatic text extraction</li>
           <li>
             • Include specific technologies and requirements for better analysis

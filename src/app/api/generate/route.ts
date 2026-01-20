@@ -151,21 +151,76 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
     ${jdText}
     
     Return ONLY valid JSON with this exact structure:
-    Return ONLY valid JSON with this exact structure:
     {
-      "skills": ["skill1", "skill2", ...],
-      "salaryEstimation": "string (e.g. $100k - $130k)",
-      "softSkills": ["softSkill1", "softSkill2", ...],
-      "evaluationCriteria": ["criteria1", "criteria2", ...] (checklist for interviewers),
+      "jdIntelligence": {
+        "clarityScore": number (0-100),
+        "roleSeniority": "Junior|Mid|Senior|Lead|Unknown",
+        "marketAlignment": "Underpaid|Market-fit|Overpaid|Unknown",
+        "issues": ["issue1", "issue2", ...],
+        "skillClassification": {
+          "primary": ["skill1", "skill2", ...],
+          "secondary": ["skill1", "skill2", ...]
+        }
+      },
+      "skills": [
+        {
+          "name": "Skill Name",
+          "category": "Core|Supporting|Tools",
+          "importance": "Must-have|Nice-to-have",
+          "proficiency": "Beginner|Intermediate|Advanced",
+          "rarity": "Common|Rare|Very Rare"
+        }
+      ],
+      "salaryAnalysis": {
+        "min": number,
+        "max": number,
+        "median": number,
+        "currency": "string (e.g. USD, INR)",
+        "locationAdjustment": "India|Remote|Global",
+        "demandTrend": "Rising|Stable|Falling",
+        "vacancyCost": number (estimated monthly cost of empty position)
+      },
+      "softSkillsAnalysis": {
+        "communication": ["skill1", "skill2"],
+        "ownership": ["skill1", "skill2"],
+        "collaboration": ["skill1", "skill2"],
+        "adaptability": ["skill1", "skill2"],
+        "leadership": ["skill1", "skill2"],
+        "redFlags": ["flag1", "flag2"]
+      },
+      "evaluationCriteria": [
+        { "category": "Technical Skills", "weight": 50, "items": ["criteria1", "criteria2"] },
+        { "category": "Problem Solving", "weight": 20, "items": ["criteria1", "criteria2"] },
+        { "category": "Communication", "weight": 15, "items": ["criteria1", "criteria2"] },
+        { "category": "Culture Fit", "weight": 10, "items": ["criteria1", "criteria2"] },
+        { "category": "Growth Potential", "weight": 5, "items": ["criteria1", "criteria2"] }
+      ],
       "codingTask": {
         "title": "Task title",
-        "description": "Detailed description",
+        "description": "High-level summary",
+        "context": "Real-world scenario description (business context)",
         "difficulty": "beginner|intermediate|advanced",
-        "requirements": ["req1", "req2", ...]
+        "duration": "e.g. 3-4 hours",
+        "requirements": ["req1", "req2"],
+        "techConstraints": ["constraint1", "constraint2"],
+        "performanceExpectations": ["perf1", "perf2"],
+        "edgeCases": ["case1", "case2"],
+        "allowedResources": ["resource1", "resource2"],
+        "rubric": {
+          "correctness": 40,
+          "quality": 25,
+          "architecture": 20,
+          "documentation": 10,
+          "tests": 5
+        }
       },
       "questions": {
-        "technical": ["question1", "question2", ...],
-        "behavioral": ["question1", "question2", ...]
+        "technical": [
+          { "question": "Question text", "category": "Fundamentals|Applied|System|Debugging", "followUp": "Scaling/Depth question" }
+        ],
+        "behavioral": [
+           { "question": "Scenario question", "trait": "Accountability|Collaboration|Ownership", "context": "Brief context" }
+        ]
       }
     }
     
@@ -181,23 +236,57 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
     ${jdText}
     
     Return ONLY valid JSON with this exact structure:
-    Return ONLY valid JSON with this exact structure:
     {
-      "skills": ["skill1", "skill2", ...],
+      "jdIntelligence": {
+        "clarityScore": number (0-100),
+        "roleSeniority": "Junior|Mid|Senior|Lead|Unknown",
+        "marketAlignment": "Underpaid|Market-fit|Overpaid|Unknown",
+        "issues": ["issue1", "issue2", ...],
+        "skillClassification": {
+          "primary": ["skill1", "skill2", ...],
+          "secondary": ["skill1", "skill2", ...]
+        }
+      },
+      "skills": [
+         {
+          "name": "Skill Name",
+          "category": "Core|Supporting|Tools",
+          "importance": "Must-have|Nice-to-have",
+          "proficiency": "Beginner|Intermediate|Advanced",
+          "rarity": "Common|Rare|Very Rare"
+        }
+      ],
       "salaryEstimation": "string (e.g. $100k - $130k)",
       "softSkills": ["softSkill1", "softSkill2", ...],
       "resumeKeywords": ["keyword1", "keyword2", ...] (ATS keywords),
       "projectSuggestion": "string (brief description of a portfolio project)",
       "codingTask": {
         "title": "Practice project title",
-        "description": "Detailed project description for learning",
+        "description": "High-level summary",
+        "context": "Real-world scenario description",
         "difficulty": "beginner|intermediate|advanced",
-        "requirements": ["req1", "req2", ...],
-        "learningResources": ["resource1", "resource2", ...]
+        "duration": "e.g. 3-4 hours",
+        "requirements": ["req1", "req2"],
+        "techConstraints": ["constraint1", "constraint2"],
+        "performanceExpectations": ["perf1", "perf2"],
+        "edgeCases": ["case1", "case2"],
+        "allowedResources": ["resource1", "resource2"],
+        "learningResources": ["resource1", "resource2"],
+        "rubric": {
+          "correctness": 40,
+          "quality": 25,
+          "architecture": 20,
+          "documentation": 10,
+          "tests": 5
+        }
       },
       "questions": {
-        "technical": ["question1", "question2", ...],
-        "behavioral": ["question1", "question2", ...],
+        "technical": [
+          { "question": "Question text", "category": "Fundamentals|Applied|System|Debugging", "followUp": "Scaling/Depth question" }
+        ],
+        "behavioral": [
+           { "question": "Scenario question", "trait": "Accountability|Collaboration|Ownership", "context": "Brief context" }
+        ],
         "selfAssessment": ["question1", "question2", ...]
       },
       "skillGaps": ["gap1", "gap2", ...],
@@ -236,12 +325,20 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
         throw new Error("Invalid response structure from Gemini");
       }
 
+      // Check for JD Intelligence
+      if (!parsedData.jdIntelligence) {
+        console.warn("Gemini response missing jdIntelligence");
+        // We could throw here, but for now let's allow it to fail gracefully in UI
+        // or mock it if strictly needed. Let's try to enforce it via prompt first.
+      }
+
+      // Check for new fields (optional but good to warn if missing)
       // Check for new fields (optional but good to warn if missing)
       if (
-        !parsedData.salaryEstimation &&
+        !parsedData.salaryAnalysis &&
         process.env.NODE_ENV === "development"
       ) {
-        console.warn("Gemini response missing salaryEstimation");
+        console.warn("Gemini response missing salaryAnalysis");
       }
 
       return parsedData;

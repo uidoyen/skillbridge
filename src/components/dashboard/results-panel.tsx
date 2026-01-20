@@ -17,6 +17,7 @@ import {
 import { AnalysisResult } from "@/types/index";
 import { RoadmapTab } from "./tabs/roadmap-tab";
 import { EvaluationTab } from "./tabs/evaluation-tab";
+import { JdIntelligencePanel } from "./jd-intelligence";
 
 interface ResultsPanelProps {
   results: AnalysisResult | null;
@@ -56,10 +57,12 @@ export default function ResultsPanel({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 flex items-center justify-center">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-4" />
-          <p className="text-gray-600">Analyzing job description...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-primary-600 dark:text-primary-400 mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-300">
+            Analyzing job description...
+          </p>
         </div>
       </div>
     );
@@ -67,7 +70,7 @@ export default function ResultsPanel({
 
   if (error) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
         <div className="text-center text-red-600">
           <AlertCircle className="w-12 h-12 mx-auto mb-4" />
           <p className="text-lg font-medium mb-2">Analysis Failed</p>
@@ -82,8 +85,8 @@ export default function ResultsPanel({
 
   if (!results) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <div className="text-center text-gray-500">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+        <div className="text-center text-gray-500 dark:text-gray-400">
           <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p className="text-lg font-medium mb-2">No Analysis Yet</p>
           <p className="text-sm mb-4">
@@ -108,43 +111,51 @@ export default function ResultsPanel({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-      {/* Tabs Header */}
-      <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 px-6 overflow-x-auto" aria-label="Tabs">
-          {availableTabs.map((tab) => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === tab.id
-                    ? "border-primary-600 text-primary-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-      </div>
+    <div className="space-y-6">
+      {/* Intelligence Layer (Top) */}
+      <JdIntelligencePanel intelligence={results.jdIntelligence} />
 
-      {/* Tab Content */}
-      <div className="p-6">
-        {activeTab === "skills" && (
-          <SkillsTab skills={results.skills} mode={mode} />
-        )}
-        {activeTab === "evaluation" && <EvaluationTab analysis={results} />}
-        {activeTab === "roadmap" && <RoadmapTab analysis={results} />}
-        {activeTab === "coding-task" && (
-          <CodingTaskTab task={results.codingTask} mode={mode} />
-        )}
-        {activeTab === "questions" && (
-          <QuestionsTab questions={results.questions} mode={mode} />
-        )}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        {/* Tabs Header */}
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <nav
+            className="flex space-x-8 px-6 overflow-x-auto"
+            aria-label="Tabs"
+          >
+            {availableTabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? "border-primary-600 text-primary-600 dark:text-primary-400 dark:border-primary-400"
+                      : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        <div className="p-6">
+          {activeTab === "skills" && (
+            <SkillsTab skills={results.skills} mode={mode} />
+          )}
+          {activeTab === "evaluation" && <EvaluationTab analysis={results} />}
+          {activeTab === "roadmap" && <RoadmapTab analysis={results} />}
+          {activeTab === "coding-task" && (
+            <CodingTaskTab task={results.codingTask} mode={mode} />
+          )}
+          {activeTab === "questions" && (
+            <QuestionsTab questions={results.questions} mode={mode} />
+          )}
+        </div>
       </div>
     </div>
   );

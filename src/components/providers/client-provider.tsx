@@ -1,6 +1,11 @@
 "use client";
 
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+import {
+  ThemeProvider,
+  createTheme,
+  useColorScheme,
+} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { theme as defaultTheme } from "@/lib/theme";
 
@@ -39,10 +44,32 @@ const theme = createTheme({
   },
 });
 
+function ThemeSynchronizer() {
+  const { mode } = useColorScheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && mode) {
+      if (mode === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  }, [mode, mounted]);
+
+  return null;
+}
+
 export function ClientProvider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme} defaultMode="dark">
       <CssBaseline />
+      <ThemeSynchronizer />
       {children}
     </ThemeProvider>
   );
