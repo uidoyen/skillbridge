@@ -57,7 +57,7 @@ export function JdIntelligencePanel({ intelligence }: JdIntelligenceProps) {
       <div className="grid md:grid-cols-4 gap-6">
         {/* Clarity Score */}
         <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-bold">
             Clarity Score
           </p>
           <div
@@ -71,7 +71,7 @@ export function JdIntelligencePanel({ intelligence }: JdIntelligenceProps) {
 
         {/* Role Seniority */}
         <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-bold">
             Detected Seniority
           </p>
           <div className="flex items-center justify-center h-16">
@@ -86,7 +86,7 @@ export function JdIntelligencePanel({ intelligence }: JdIntelligenceProps) {
 
         {/* Market Alignment */}
         <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-bold">
             Market Alignment
           </p>
           <div className="flex items-center justify-center h-16">
@@ -101,7 +101,7 @@ export function JdIntelligencePanel({ intelligence }: JdIntelligenceProps) {
 
         {/* Primary Focus */}
         <div className="text-center p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 font-bold">
             Primary Focus
           </p>
           <div className="flex flex-wrap justify-center gap-1 max-h-16 overflow-hidden">
@@ -133,9 +133,9 @@ export function JdIntelligencePanel({ intelligence }: JdIntelligenceProps) {
             {issues.map((issue, i) => (
               <div
                 key={i}
-                className="flex items-start text-sm text-gray-600 dark:text-gray-400 bg-orange-50 dark:bg-orange-900/10 p-2.5 rounded-lg"
+                className="flex items-start text-sm text-gray-600 dark:text-gray-400 bg-yellow-50 dark:bg-yellow-900/10 p-2.5 rounded-lg"
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5 mr-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 mt-1.5 mr-2 flex-shrink-0" />
                 {issue}
               </div>
             ))}

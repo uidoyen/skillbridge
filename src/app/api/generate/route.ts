@@ -6,6 +6,9 @@ const genAI = process.env.GEMINI_API_KEY
   ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   : null;
 
+// Local LLM Configuration
+const LOCAL_LLM_BASE_URL = process.env.LOCAL_LLM_BASE_URL;
+
 // JD validation criteria
 const JD_KEYWORDS = [
   "experience",
@@ -67,21 +70,45 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if Gemini is configured
-    if (!genAI) {
-      return NextResponse.json(
-        {
-          error:
-            "Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.",
-        },
-        { status: 500 }
-      );
+    let result;
+    let usedSource = "gemini";
+
+    // Try Local LLM first if configured
+    if (LOCAL_LLM_BASE_URL) {
+      try {
+        console.log("Attempting to use Local LLM...");
+        result = await generateWithLocalLLM(jdText, mode);
+        usedSource = "local-llm";
+        console.log("Successfully used Local LLM.");
+      } catch (localError) {
+        console.warn("Local LLM failed, falling back to Gemini:", localError);
+        // Fallthrough to Gemini
+      }
     }
 
-    console.log("Using Gemini for analysis...");
-    const result = await generateWithGemini(jdText, mode);
+    // If no result yet (either no Local LLM or it failed), try Gemini
+    if (!result) {
+      // Check if Gemini is configured
+      if (!genAI) {
+        return NextResponse.json(
+          {
+            error:
+              "Gemini API key not configured. Please add GEMINI_API_KEY to your environment variables.",
+          },
+          { status: 500 }
+        );
+      }
 
-    return NextResponse.json(result);
+      console.log("Using Gemini for analysis...");
+      try {
+        result = await generateWithGemini(jdText, mode);
+      } catch (geminiError) {
+        console.error("Gemini also failed:", geminiError);
+        throw geminiError;
+      }
+    }
+
+    return NextResponse.json({ ...result, _source: usedSource });
   } catch (error) {
     console.error("Error in generate API:", error);
     return NextResponse.json(
@@ -132,18 +159,7 @@ function validateJobDescription(text: string): {
   };
 }
 
-async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
-  if (!genAI) {
-    throw new Error("Gemini client not initialized");
-  }
-
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.5-flash",
-    generationConfig: {
-      temperature: 0.1,
-    },
-  });
-
+function getSystemPrompt(mode: "hr" | "dev", jdText: string) {
   const hrPrompt = `
     You are an expert HR recruiter. Analyze the following job description for hiring purposes.
     
@@ -165,7 +181,7 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
       "skills": [
         {
           "name": "Skill Name",
-          "category": "Core|Supporting|Tools",
+          "category": "Core|Frameworks|Supporting|Tools",
           "importance": "Must-have|Nice-to-have",
           "proficiency": "Beginner|Intermediate|Advanced",
           "rarity": "Common|Rare|Very Rare"
@@ -225,6 +241,13 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
     }
     
     Focus on assessment and hiring perspective. Extract technical skills and create relevant coding challenges and interview questions.
+
+    IMPORTANT GUIDELINES FOR SKILLS:
+    1. "Core" Skills: Strictly limit to key Programming Languages (e.g., Python, Java, TypeScript) and Fundamental Concepts (e.g., Data Structures, System Design). Do NOT include Frameworks here.
+    2. "Frameworks": Include major application frameworks and libraries (e.g., React, Angular, Spring Boot, Django, .NET Core, Express.js).
+    3. "Supporting" Skills: Include tools, patterns, secondary libraries, and concepts (e.g., Redux, Microservices, CI/CD, Agile, REST APIs).
+    4. "Tools": Specific software or platforms (e.g., Jira, GitHub, VS Code, Docker, Kubernetes).
+    5. Avoid redundancy: If "React" is listed, do not list "Frontend Development". If "PostgreSQL" is listed, do not list "SQL Databases" unless specifically relevant.
     
     IMPORTANT: Return ONLY valid JSON. No additional text, no markdown, no code blocks.
   `;
@@ -250,7 +273,7 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
       "skills": [
          {
           "name": "Skill Name",
-          "category": "Core|Supporting|Tools",
+          "category": "Core|Frameworks|Supporting|Tools",
           "importance": "Must-have|Nice-to-have",
           "proficiency": "Beginner|Intermediate|Advanced",
           "rarity": "Common|Rare|Very Rare"
@@ -294,11 +317,81 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
     }
     
     Focus on skill development and interview preparation. Identify skill gaps and provide learning guidance.
+
+    IMPORTANT GUIDELINES FOR SKILLS:
+    1. "Core" Skills: Strictly limit to key Programming Languages (e.g., Python, Java, TypeScript) and Fundamental Concepts (e.g., Data Structures, System Design). Do NOT include Frameworks here.
+    2. "Frameworks": Include major application frameworks and libraries (e.g., React, Angular, Spring Boot, Django, .NET Core, Express.js).
+    3. "Supporting" Skills: Include tools, patterns, secondary libraries, and concepts (e.g., Redux, Microservices, CI/CD, Agile, REST APIs).
+    4. "Tools": Specific software or platforms (e.g., Jira, GitHub, VS Code, Docker, Kubernetes).
+    5. Avoid redundancy: If "React" is listed, do not list "Frontend Development". If "PostgreSQL" is listed, do not list "SQL Databases" unless specifically relevant.
     
     IMPORTANT: Return ONLY valid JSON. No additional text, no markdown, no code blocks.
   `;
 
-  const prompt = mode === "hr" ? hrPrompt : devPrompt;
+  return mode === "hr" ? hrPrompt : devPrompt;
+}
+
+async function generateWithLocalLLM(jdText: string, mode: "hr" | "dev") {
+  if (!LOCAL_LLM_BASE_URL) {
+    throw new Error("Local LLM URL not configured");
+  }
+
+  const prompt = getSystemPrompt(mode, jdText);
+
+  // OpenAI-compatible chat completion endpoint
+  const response = await fetch(`${LOCAL_LLM_BASE_URL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // Add Authorization if needed, but often local LLMs don't need it or use a dummy key
+      Authorization: "Bearer local-key",
+    },
+    body: JSON.stringify({
+      model: "local-model", // This is often ignored by local servers like LM Studio, or you can make it an env var
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful AI assistant that outputs strict JSON.",
+        },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      temperature: 0.1,
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Local LLM API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const text = data.choices?.[0]?.message?.content;
+
+  if (!text) {
+    throw new Error("Empty response from Local LLM");
+  }
+
+  console.log("Local LLM raw response:", text);
+  const jsonText = extractJsonFromText(text);
+  return parseAndValidateJson(jsonText);
+}
+
+async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
+  if (!genAI) {
+    throw new Error("Gemini client not initialized");
+  }
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash",
+    generationConfig: {
+      temperature: 0.1,
+    },
+  });
+
+  const prompt = getSystemPrompt(mode, jdText);
 
   try {
     console.log("Sending request to Gemini...");
@@ -308,52 +401,8 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
 
     console.log("Gemini raw response:", text);
 
-    // Extract JSON using a simpler approach
     const jsonText = extractJsonFromText(text);
-    console.log("Extracted JSON:", jsonText);
-
-    try {
-      const parsedData = JSON.parse(jsonText);
-
-      // Validate the response structure
-      // Validate the response structure
-      if (
-        !parsedData.skills ||
-        !parsedData.codingTask ||
-        !parsedData.questions
-      ) {
-        throw new Error("Invalid response structure from Gemini");
-      }
-
-      // Check for JD Intelligence
-      if (!parsedData.jdIntelligence) {
-        console.warn("Gemini response missing jdIntelligence");
-        // We could throw here, but for now let's allow it to fail gracefully in UI
-        // or mock it if strictly needed. Let's try to enforce it via prompt first.
-      }
-
-      // Check for new fields (optional but good to warn if missing)
-      // Check for new fields (optional but good to warn if missing)
-      if (
-        !parsedData.salaryAnalysis &&
-        process.env.NODE_ENV === "development"
-      ) {
-        console.warn("Gemini response missing salaryAnalysis");
-      }
-
-      return parsedData;
-    } catch (parseError) {
-      console.error("JSON parsing error:", parseError);
-      console.error("Problematic text:", jsonText);
-
-      throw new Error(
-        `Invalid JSON response from Gemini: ${
-          parseError instanceof Error
-            ? parseError.message
-            : "Unknown parsing error"
-        }`
-      );
-    }
+    return parseAndValidateJson(jsonText);
   } catch (error: unknown) {
     console.error("Gemini API error:", error);
     throw new Error(
@@ -364,10 +413,33 @@ async function generateWithGemini(jdText: string, mode: "hr" | "dev") {
   }
 }
 
+function parseAndValidateJson(jsonText: string) {
+  try {
+    console.log("Extracted JSON:", jsonText);
+    const parsedData = JSON.parse(jsonText);
+
+    // Validate the response structure
+    if (!parsedData.skills || !parsedData.codingTask || !parsedData.questions) {
+      throw new Error("Invalid response structure");
+    }
+
+    return parsedData;
+  } catch (parseError) {
+    console.error("JSON parsing error:", parseError);
+    throw new Error(
+      `Invalid JSON response: ${
+        parseError instanceof Error
+          ? parseError.message
+          : "Unknown parsing error"
+      }`
+    );
+  }
+}
+
 // Simplified JSON extraction function
 function extractJsonFromText(text: string): string {
   if (!text) {
-    throw new Error("Empty response from Gemini");
+    throw new Error("Empty response");
   }
 
   // Remove markdown code blocks

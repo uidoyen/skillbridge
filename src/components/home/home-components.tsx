@@ -10,6 +10,12 @@ import {
   Terminal,
   Database,
   Cpu,
+  BarChart3,
+  MessageSquare,
+  Scale,
+  Video,
+  LineChart,
+  Globe,
 } from "lucide-react";
 
 export function Hero() {
@@ -225,7 +231,7 @@ export function FeatureTabs() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {activeTab === "hr" ? (
           <>
             <FeatureCard
@@ -242,6 +248,21 @@ export function FeatureTabs() {
               icon={<Users className="w-6 h-6 text-blue-600" />}
               title="Candidate Ranking"
               description="See how candidates score against your specific requirements."
+            />
+            <FeatureCard
+              icon={<BarChart3 className="w-6 h-6 text-blue-600" />}
+              title="Market Analysis"
+              description="Get instant salary insights and demand trends for the specific role."
+            />
+            <FeatureCard
+              icon={<MessageSquare className="w-6 h-6 text-blue-600" />}
+              title="Soft Skills profiling"
+              description="Identify behavioral traits and potential red flags from candidate responses."
+            />
+            <FeatureCard
+              icon={<Scale className="w-6 h-6 text-blue-600" />}
+              title="Structured Evaluation"
+              description="Use weighted criteria to standardize your hiring and reduce bias."
             />
           </>
         ) : (
@@ -260,6 +281,21 @@ export function FeatureTabs() {
               icon={<Briefcase className="w-6 h-6 text-purple-600" />}
               title="Resume Optimization"
               description="See which keywords you're missing for your dream job."
+            />
+            <FeatureCard
+              icon={<Video className="w-6 h-6 text-purple-600" />}
+              title="Mock Interviews"
+              description="Simulate real system design and behavioral interviews with AI."
+            />
+            <FeatureCard
+              icon={<LineChart className="w-6 h-6 text-purple-600" />}
+              title="Progress Tracking"
+              description="Track your performance metrics and see your growth over time."
+            />
+            <FeatureCard
+              icon={<Globe className="w-6 h-6 text-purple-600" />}
+              title="Real-world Scenarios"
+              description="Solve complex system thinking and architecture challenges."
             />
           </>
         )}

@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
   LucideIcon,
+  Layers,
 } from "lucide-react";
 
 interface SkillsTabProps {
@@ -19,6 +20,8 @@ interface SkillsTabProps {
 
 export default function SkillsTab({ skills, mode }: SkillsTabProps) {
   const coreSkills = skills?.filter((s) => s.category === "Core") || [];
+  const frameworkSkills =
+    skills?.filter((s) => s.category === "Frameworks") || [];
   const supportingSkills =
     skills?.filter(
       (s) => s.category === "Supporting" || s.category === "Tools"
@@ -159,9 +162,16 @@ export default function SkillsTab({ skills, mode }: SkillsTabProps) {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <SkillAccordion
-        title="Core Technical Skills"
+        title="Core Languages & Concepts"
         icon={Shield}
         skills={coreSkills}
+        defaultOpen={true}
+      />
+
+      <SkillAccordion
+        title="Key Frameworks & Libraries"
+        icon={Layers}
+        skills={frameworkSkills}
         defaultOpen={true}
       />
 

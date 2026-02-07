@@ -63,7 +63,7 @@ export interface User {
 
 export interface DetailedSkill {
   name: string;
-  category: "Core" | "Supporting" | "Tools";
+  category: "Core" | "Frameworks" | "Supporting" | "Tools";
   importance: "Must-have" | "Nice-to-have";
   proficiency: "Beginner" | "Intermediate" | "Advanced";
   rarity: "Common" | "Rare" | "Very Rare";
